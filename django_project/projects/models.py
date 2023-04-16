@@ -12,3 +12,11 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Thumbnail(models.Model):
+    image_url = models.CharField(max_length=150)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.project.__str__()
