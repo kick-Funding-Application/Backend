@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-0)9ihb_5&$nd$w#i^cwazxphr-3s=+k%8#k4bxw(grm5!32(!7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,12 +40,20 @@ INSTALLED_APPS = [
     # Third Party Apps :
     # TODO If you wanna add third party package add it here to be more readable
     "rest_framework",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
     # Local Apps :
     "api",
     "payment",
     "projects",
     "users",
 ]
+
+
+SITE_ID = 1
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -74,6 +82,17 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
+
 
 WSGI_APPLICATION = "django_project.wsgi.application"
 
@@ -129,3 +148,23 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "bookstoreusingdjango@outlook.com"
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"
+# enter your password
+EMAIL_HOST_PASSWORD = "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"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = True
+# Set your desired email subject prefix
+ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Subject Prefix'
+# Use 'https' if you have an SSL certificate
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
