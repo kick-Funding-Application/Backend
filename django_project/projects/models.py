@@ -25,6 +25,9 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+    def get_img_url(self):
+        return Thumbnail.objects.filter(project=self).all()
+
 
 class Thumbnail(models.Model):
     image_url = models.CharField(max_length=255)
