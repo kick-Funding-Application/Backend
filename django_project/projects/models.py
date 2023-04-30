@@ -14,6 +14,7 @@ class Project(models.Model):
 
     title = models.CharField(max_length=150, unique=True)
     details = models.TextField()
+    target_amount = models.PositiveIntegerField(default=0)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     created_dt = models.DateTimeField(auto_now_add=True)
