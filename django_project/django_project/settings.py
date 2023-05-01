@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Third Party Apps :
     # TODO If you wanna add third party package add it here to be more readable
     "rest_framework",
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -52,7 +53,7 @@ INSTALLED_APPS = [
 ]
 
 
-SITE_ID = 1
+# SITE_ID = 1
 
 
 MIDDLEWARE = [
@@ -151,20 +152,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "bookstoreusingdjango@outlook.com"
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_HOST_USER = "apikey"
-# enter your password
-EMAIL_HOST_PASSWORD = "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"
+# This Is The SMTP Config to send emails from my own mail..
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'pythontestmanagement@gmail.com'
+EMAIL_HOST_USER = 'pythontestmanagement@gmail.com'
+EMAIL_HOST_PASSWORD = 'yqdfysqbyrlzqfck'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
-# Set your desired email subject prefix
-ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Subject Prefix'
-# Use 'https' if you have an SSL certificate
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+# Email Avilable for just only 24 * 60 *60 == 1 Day Only
+PASSWORD_RESET_TIMEOUT = 86400
