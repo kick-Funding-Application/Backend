@@ -152,8 +152,15 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomSignupForm',
+}
+
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+
 # This Is The SMTP Config to send emails from my own mail..
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_FROM = 'pythontestmanagement@gmail.com'
 EMAIL_HOST_USER = 'pythontestmanagement@gmail.com'
