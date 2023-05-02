@@ -1,9 +1,15 @@
 from django.contrib import admin
 from django.urls import path, include
+from dj_rest_auth.registration.views import VerifyEmailView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/accounts/', include('api.urls'))
+    path('accounts/', include('api.urls')),
+    path('api/dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('api/dj-rest-auth/registration/',
+         include('dj_rest_auth.registration.urls')),
+    path('dj-rest-auth/account-confirm-email/', VerifyEmailView.as_view(),
+         name='account_email_verification_sent')
 
 ]
 

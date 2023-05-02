@@ -40,11 +40,12 @@ INSTALLED_APPS = [
     # Third Party Apps :
     # TODO If you wanna add third party package add it here to be more readable
     "rest_framework",
-
+    'dj_rest_auth',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
+    "rest_framework.authtoken",
+    'dj_rest_auth.registration',
     # Local Apps :
     "api",
     "payment",
@@ -53,7 +54,7 @@ INSTALLED_APPS = [
 ]
 
 
-# SITE_ID = 1
+SITE_ID = 1
 
 
 MIDDLEWARE = [
@@ -149,8 +150,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 
 ACCOUNT_FORMS = {
@@ -159,14 +160,26 @@ ACCOUNT_FORMS = {
 
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 
-# This Is The SMTP Config to send emails from my own mail..
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_FROM = 'pythontestmanagement@gmail.com'
-EMAIL_HOST_USER = 'pythontestmanagement@gmail.com'
-EMAIL_HOST_PASSWORD = 'yqdfysqbyrlzqfck'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# # This Is The SMTP Config to send emails from my own mail..
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_FROM = 'pythontestmanagement@gmail.com'
+# EMAIL_HOST_USER = 'pythontestmanagement@gmail.com'
+# EMAIL_HOST_PASSWORD = 'yqdfysqbyrlzqfck'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 # Email Avilable for just only 24 * 60 *60 == 1 Day Only
-PASSWORD_RESET_TIMEOUT = 86400
+# PASSWORD_RESET_TIMEOUT = 86400
+
+ACCOUNT_EMAIL_REQUIRED = False
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+OLD_PASSWORD_FIELD_ENABLED = True
+LOGOUT_ON_PASSWORD_CHANGE = False
+AUTH_USER_MODEL = "users.CustomUser"

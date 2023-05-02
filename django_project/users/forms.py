@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import CustomUser  # from the current dir import it
 from logging import PlaceHolder
 from tkinter import Widget
 from django import forms
@@ -18,3 +20,17 @@ class CustomSignupForm(SignupForm):
     country = CountryField().formfield()
     user_image = forms.ImageField(required=False)
     birth_date = forms.DateTimeField()
+
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm):
+        model = CustomUser
+        # this name from the customized models
+        fields = UserCreationForm.Meta.fields + \
+            ("first_name", "last_name", "phone_number")
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = UserChangeForm.Meta.fields
