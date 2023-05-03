@@ -40,11 +40,9 @@ INSTALLED_APPS = [
     # Third Party Apps :
     # TODO If you wanna add third party package add it here to be more readable
     "rest_framework",
-
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     # Local Apps :
     "api",
     "payment",
@@ -153,11 +151,11 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 # This Is The SMTP Config to send emails from my own mail..
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_FROM = 'pythontestmanagement@gmail.com'
-EMAIL_HOST_USER = 'pythontestmanagement@gmail.com'
-EMAIL_HOST_PASSWORD = 'yqdfysqbyrlzqfck'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_FROM = "pythontestmanagement@gmail.com"
+EMAIL_HOST_USER = "pythontestmanagement@gmail.com"
+EMAIL_HOST_PASSWORD = "yqdfysqbyrlzqfck"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

@@ -8,9 +8,26 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         fields = ("image_url",)
 
 
+# class ProjectInputSerializer(serializers.ModelSerializer):
+#     thumbnails = ThumbnailSerializer(many=True)
+#
+#     class Meta:
+#         model = Project
+#         fields = (
+#             "title",
+#             "details",
+#             "target_amount",
+#             "end_date",
+#             "category",
+#             "tags",
+#             "thumbnails",
+#         )
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
     img_url = serializers.SerializerMethodField()
+    thumbnails = ThumbnailSerializer(many=True, write_only=True)
 
     class Meta:
         model = Project
@@ -18,10 +35,12 @@ class ProjectSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "details",
+            "target_amount",
             "end_date",
             "category",
             "tags",
             "img_url",
+            "thumbnails",
         )
 
     def get_img_url(self, obj):
@@ -30,3 +49,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             serializer = ThumbnailSerializer(image_url, many=True)
             return serializer.data
         return None
+
+    def create(self, validated_data):
+        thumbnail_data = validated_data.pop("thumbnails")
+        project = Project.objects.create(**validated_data)
+        for data in thumbnail_data:
+            Thumbnail.objects.create(project=project, **data)
+        return project

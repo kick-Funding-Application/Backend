@@ -1,8 +1,6 @@
-from django.shortcuts import render
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics
 from .serializers import ProjectSerializer, ThumbnailSerializer
 from projects.models import Project, Thumbnail
-from rest_framework.response import Response
 
 
 # Create your views here.
@@ -16,7 +14,7 @@ class ThumbnailViewSets(viewsets.ModelViewSet):
     serializer_class = ThumbnailSerializer
 
 
-class ProjectByCatergoryAPI(generics.ListAPIView):
+class ProjectByCategoryAPI(generics.ListAPIView):
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
