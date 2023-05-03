@@ -15,4 +15,5 @@ urlpatterns = [
         ProjectByCategoryAPI.as_view(),
         name="project_list",
     ),
+    path('', include('allauth.urls')),
 ]
