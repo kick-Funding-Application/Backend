@@ -11,12 +11,9 @@ User = settings.AUTH_USER_MODEL
 
 
 class CustomSignupForm(SignupForm):
-    first_name = forms.CharField(
-        max_length=30, help_text='Enter Your Fisrt Name')
-    last_name = forms.CharField(
-        max_length=30, help_text='Enter Your Last Name')
-    phone_number = forms.CharField(
-        max_length=14, required=False, help_text='Optional')
+    first_name = forms.CharField(max_length=30, help_text="Enter Your Fisrt Name")
+    last_name = forms.CharField(max_length=30, help_text="Enter Your Last Name")
+    phone_number = forms.CharField(max_length=14, required=False, help_text="Optional")
     country = CountryField().formfield()
     user_image = forms.ImageField(required=False)
     birth_date = forms.DateTimeField()
@@ -26,8 +23,11 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = CustomUser
         # this name from the customized models
-        fields = UserCreationForm.Meta.fields + \
-            ("first_name", "last_name", "phone_number")
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "phone_number",
+        )
 
 
 class CustomUserChangeForm(UserChangeForm):
