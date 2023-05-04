@@ -1,4 +1,8 @@
-from .views import ProjectViewSets, ThumbnailViewSets, ProjectByCategoryAPI
+from .views import (
+    ProjectViewSets,
+    ThumbnailViewSets,
+    ProjectByCategoryAPI,
+)
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 

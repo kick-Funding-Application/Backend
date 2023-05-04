@@ -8,22 +8,6 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         fields = ("image_url",)
 
 
-# class ProjectInputSerializer(serializers.ModelSerializer):
-#     thumbnails = ThumbnailSerializer(many=True)
-#
-#     class Meta:
-#         model = Project
-#         fields = (
-#             "title",
-#             "details",
-#             "target_amount",
-#             "end_date",
-#             "category",
-#             "tags",
-#             "thumbnails",
-#         )
-
-
 class ProjectSerializer(serializers.ModelSerializer):
     end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
     img_url = serializers.SerializerMethodField()
