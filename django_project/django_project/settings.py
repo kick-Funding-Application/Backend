@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
+    "django.contrib.sites",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -45,12 +46,14 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "rest_framework.authtoken",
+    "django_countries",
     "dj_rest_auth.registration",
     # Local Apps :
     "api",
     "payment",
     "projects",
-    "users",
+    "users"
+
 ]
 
 
@@ -80,6 +83,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -150,36 +154,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-
-
 ACCOUNT_FORMS = {
     "signup": "users.forms.CustomSignupForm",
 }
 
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+OLD_PASSWORD_FIELD_ENABLED = True
+LOGOUT_ON_PASSWORD_CHANGE = False
 
-# # This Is The SMTP Config to send emails from my own mail..
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_FROM = 'pythontestmanagement@gmail.com'
-# EMAIL_HOST_USER = 'pythontestmanagement@gmail.com'
-# EMAIL_HOST_PASSWORD = 'yqdfysqbyrlzqfck'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+REST_AUTH = {
+    'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
+    'USER_DETAILS_SERIALIZER': 'users.serializers.CustomUserDetailsSerializer',
+}
 
-# Email Avilable for just only 24 * 60 *60 == 1 Day Only
-# PASSWORD_RESET_TIMEOUT = 86400
-
-ACCOUNT_EMAIL_REQUIRED = False
+AUTH_USER_MODEL = 'users.CustomUser'
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ]
 }
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-OLD_PASSWORD_FIELD_ENABLED = True
-LOGOUT_ON_PASSWORD_CHANGE = False
-AUTH_USER_MODEL = "users.CustomUser"
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SITE_ID = 1
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'optional'

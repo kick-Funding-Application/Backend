@@ -1,17 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 from dj_rest_auth.registration.views import VerifyEmailView
+from dj_rest_auth.views import PasswordChangeView, PasswordResetView, PasswordResetConfirmView
+from users.views import CustomRegisterView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
-    path("api/dj-rest-auth/", include("dj_rest_auth.urls")),
-    path("api/dj-rest-auth/registration/", include("dj_rest_auth.registration.urls")),
-    path(
-        "dj-rest-auth/account-confirm-email/",
-        VerifyEmailView.as_view(),
-        name="account_email_verification_sent",
-    ),
+    # path("api-auth/", include("rest_framework.urls")),
 ]
 
 # TODO: @ahmedesmail07
