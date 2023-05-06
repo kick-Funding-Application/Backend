@@ -1,13 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from dj_rest_auth.registration.views import VerifyEmailView
-from dj_rest_auth.views import PasswordChangeView, PasswordResetView, PasswordResetConfirmView
-from users.views import CustomRegisterView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
-    # path("api-auth/", include("rest_framework.urls")),
 ]
 
 # TODO: @ahmedesmail07
@@ -18,6 +14,7 @@ urlpatterns = [
 
 """
 END POINTS :
+For All Auth Not JSON
 api/accounts/signup/[name='account_signup']
 api/accounts/login/[name='account_login']
 api/accounts/logout/[name='account_logout']

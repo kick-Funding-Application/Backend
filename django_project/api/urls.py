@@ -4,13 +4,13 @@ from .views import (
     ThumbnailViewSets,
     ProjectByCategoryAPI,
 )
-from rest_framework.routers import DefaultRouter
-from django.urls import path, include
 from dj_rest_auth.registration.views import VerifyEmailView
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include, re_path
 from dj_rest_auth.views import (
-    PasswordChangeView, PasswordResetView, PasswordResetConfirmView, LogoutView)
+    PasswordChangeView, PasswordResetView, PasswordResetConfirmView,)
 from users.views import (
-    CustomRegisterView, CustomUserDetailsView, EmailConfirmationView)
+    CustomRegisterView, CustomUserDetailsView,)
 
 
 router = DefaultRouter()
@@ -19,10 +19,10 @@ router.register("images", ThumbnailViewSets, basename="image")
 
 
 urlpatterns = [
-    path('dj-rest-auth/password/reset/', PasswordResetView.as_view(),
+    path('password/reset/', PasswordResetView.as_view(),
          name='rest_password_reset'),
-    path('dj-rest-auth/password/reset/confirm/', PasswordResetConfirmView.as_view(),
-         name='rest_password_reset_confirm'),
+    path('password/reset/confirm/<uidb64>/<token>/',
+         PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path("", include(router.urls)),
     path(
         "projects/<str:category>/filter",
@@ -32,7 +32,10 @@ urlpatterns = [
     path("dj-rest-auth/", include("dj_rest_auth.urls")),
     path('dj-rest-auth/registration/',
          CustomRegisterView.as_view(), name='rest_register'),
+    re_path('account-confirm-email/', VerifyEmailView.as_view(),
+            name='account_email_verification_sent'),
+    re_path('account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),
+            name='account_confirm_email'),
     path("api/dj-rest-auth/user/",
          CustomUserDetailsView().as_view(), name='user-details'),
-    path('', include('django.contrib.auth.urls')),
 ]

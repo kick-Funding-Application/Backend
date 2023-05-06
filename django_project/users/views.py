@@ -2,10 +2,8 @@ from django.contrib.auth import get_user_model
 from dj_rest_auth.registration.views import RegisterView
 from dj_rest_auth.views import UserDetailsView
 from users.serializers import CustomRegisterSerializer
-from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from .serializers import CustomUserDetailsSerializer
 from rest_framework import status
