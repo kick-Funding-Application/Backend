@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from projects.models import Thumbnail, Project, Rate
+from projects.models import Thumbnail, Project
+from common.models import Rate
 
 
 class ThumbnailSerializer(serializers.ModelSerializer):
@@ -46,16 +47,19 @@ class ProjectSerializer(serializers.ModelSerializer):
         num_3 = counts.get(3, 0)
         num_4 = counts.get(4, 0)
         num_5 = counts.get(5, 0)
-        avg_rate = (num_5 * 5 + num_4 * 4 + num_3 * 3 + num_2 * 2 + num_1 * 1) / (
-            float(num_5 + num_4 + num_3 + num_2 + num_1)
-        )
+        try:
+            avg_rate = (num_5 * 5 + num_4 * 4 + num_3 * 3 + num_2 * 2 + num_1 * 1) / (
+                float(num_5 + num_4 + num_3 + num_2 + num_1)
+            )
+        except ZeroDivisionError:
+            avg_rate = 0
         rate_data = {
             "num_1": num_1,
             "num_2": num_2,
             "num_3": num_3,
             "num_4": num_4,
             "num_5": num_5,
-            "avg_rate": avg_rate,
+            "avg_rate": round(avg_rate, 2),
         }
         return rate_data
 

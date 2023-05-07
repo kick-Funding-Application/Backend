@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "payment",
     "projects",
     "users",
+    "common",
 ]
 
 

@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 # Create your models here.
@@ -37,13 +36,3 @@ class Thumbnail(models.Model):
 
     def __str__(self):
         return self.project.__str__()
-
-
-class Rate(models.Model):
-    value = models.IntegerField(
-        default=0, validators=[MaxValueValidator(5), MinValueValidator(0)]
-    )
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.value)
