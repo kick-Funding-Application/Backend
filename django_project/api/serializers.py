@@ -8,12 +8,6 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         fields = ("image_url",)
 
 
-class RateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rate
-        fields = ("value",)
-
-
 class ProjectSerializer(serializers.ModelSerializer):
     end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
     img_url = serializers.SerializerMethodField()
@@ -43,11 +37,27 @@ class ProjectSerializer(serializers.ModelSerializer):
         return None
 
     def get_rate(self, obj):
-        rate = obj.get_rate()
-        if rate:
-            serializer = RateSerializer(rate, many=True)
-            return serializer.data
-        return None
+        counts = {}
+        for i in range(1, 6):
+            cnt = Rate.objects.filter(project=obj, value=i).count()
+            counts[i] = cnt
+        num_1 = counts.get(1, 0)
+        num_2 = counts.get(2, 0)
+        num_3 = counts.get(3, 0)
+        num_4 = counts.get(4, 0)
+        num_5 = counts.get(5, 0)
+        avg_rate = (num_5 * 5 + num_4 * 4 + num_3 * 3 + num_2 * 2 + num_1 * 1) / (
+            float(num_5 + num_4 + num_3 + num_2 + num_1)
+        )
+        rate_data = {
+            "num_1": num_1,
+            "num_2": num_2,
+            "num_3": num_3,
+            "num_4": num_4,
+            "num_5": num_5,
+            "avg_rate": avg_rate,
+        }
+        return rate_data
 
     def create(self, validated_data):
         thumbnail_data = validated_data.pop("thumbnails")
