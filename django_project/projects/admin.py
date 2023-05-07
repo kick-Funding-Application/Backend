@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, Thumbnail
+from .models import Project, Thumbnail, Rate
 
 
 # Register your models here.
@@ -16,3 +16,4 @@ class ThumbnailAdmin(admin.ModelAdmin):
 
 admin.site.register(Project, ThumbnailAdmin)
 admin.site.register(Thumbnail)
+admin.site.register(Rate)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from projects.models import Thumbnail, Project
+from projects.models import Thumbnail, Project, Rate
 
 
 class ThumbnailSerializer(serializers.ModelSerializer):
@@ -8,9 +8,16 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         fields = ("image_url",)
 
 
+class RateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rate
+        fields = ("value",)
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
     img_url = serializers.SerializerMethodField()
+    rate = serializers.SerializerMethodField()
     thumbnails = ThumbnailSerializer(many=True, write_only=True)
 
     class Meta:
@@ -23,6 +30,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "end_date",
             "category",
             "tags",
+            "rate",
             "img_url",
             "thumbnails",
         )
@@ -31,6 +39,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         image_url = obj.get_img_url()
         if image_url:
             serializer = ThumbnailSerializer(image_url, many=True)
+            return serializer.data
+        return None
+
+    def get_rate(self, obj):
+        rate = obj.get_rate()
+        if rate:
+            serializer = RateSerializer(rate, many=True)
             return serializer.data
         return None
 
