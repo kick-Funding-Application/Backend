@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-0)9ihb_5&$nd$w#i^cwazxphr-3s=+k%8#k4bxw(grm5!32(!7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_countries",
     "dj_rest_auth.registration",
+    "sendgrid",
     # Local Apps :
     "api",
     "payment",
@@ -186,3 +187,9 @@ SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 LOGIN_ON_EMAIL_CONFIRMATION = True
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_FROM = "kickfundingapp@gmail.com"
+EMAIL_HOST_USER = "apikey"
+EMAIL_HOST_PASSWORD = "SG.INQQHB4eTTmNNPzoyoN9kA.XbHXTeskI-7o9KujIYHwnU05P2mjOomUdVmk9NPaXXk"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

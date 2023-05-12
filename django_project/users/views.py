@@ -7,6 +7,11 @@ from rest_framework.response import Response
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from .serializers import CustomUserDetailsSerializer
 from rest_framework import status
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from django.utils.crypto import get_random_string
 
 
 class CustomRegisterView(RegisterView):
@@ -19,6 +24,32 @@ class CustomRegisterView(RegisterView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return super().post(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        user = serializer.save(self.request)
+
+        # Get the current site
+        current_site = get_current_site(self.request)
+        key = get_random_string(length=40)
+        # Create the email confirmation instance
+        email_confirmation = EmailConfirmation.create(
+            user.emailaddress_set.get(email=user.email))
+        email_confirmation.sent = timezone.now()
+        email_confirmation.save()
+
+        # Build the confirmation URL
+        confirmation_url = reverse(
+            'email-confirmation', kwargs={'key': email_confirmation.key})
+        confirmation_url = f"{current_site}{confirmation_url}"
+
+        # Send the email
+        send_mail(
+            'Email Confirmation',
+            f'Please confirm your email by clicking the following link: {confirmation_url}',
+            'your-email@gmail.com',
+            [user.email],
+            fail_silently=False,
+        )
 
 
 class CustomUserDetailsView(UserDetailsView):

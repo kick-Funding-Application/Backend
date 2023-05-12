@@ -15,6 +15,7 @@ from dj_rest_auth.views import (
 from users.views import (
     CustomRegisterView,
     CustomUserDetailsView,
+    EmailConfirmationView
 )
 
 
@@ -24,7 +25,8 @@ router.register("images", ThumbnailViewSets, basename="image")
 
 
 urlpatterns = [
-    path("password/reset/", PasswordResetView.as_view(), name="rest_password_reset"),
+    path("password/reset/", PasswordResetView.as_view(),
+         name="rest_password_reset"),
     path(
         "password/reset/confirm/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(),
@@ -50,7 +52,10 @@ urlpatterns = [
         VerifyEmailView.as_view(),
         name="account_confirm_email",
     ),
+    path('email-confirmation/<str:key>/',
+         EmailConfirmationView.as_view(), name='email-confirmation'),
     path(
-        "api/dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"
+        "dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"
     ),
+    path("", include("payment.urls")),
 ]

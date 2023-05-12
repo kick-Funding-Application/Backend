@@ -10,7 +10,8 @@ class ThumbnailSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
+    end_date = serializers.DateTimeField(
+        format="%B %d, %Y %I:%M %p", required=False)
     img_url = serializers.SerializerMethodField()
     rate = serializers.SerializerMethodField()
     thumbnails = ThumbnailSerializer(many=True, write_only=True)
@@ -22,6 +23,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "title",
             "details",
             "target_amount",
+            "current_amount",
             "end_date",
             "category",
             "tags",

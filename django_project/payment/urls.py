@@ -1,5 +1,6 @@
-from django.urls import include, path
+from django.urls import path, include
+from .views import DonateProjectView
 
 urlpatterns = [
-    path("payments/", include("payments.urls")),
+    path('donate/', DonateProjectView.as_view(), name='donate'),
 ]
