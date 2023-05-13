@@ -1,7 +1,5 @@
-from urllib import request
 from rest_framework import serializers
 from .models import Payment
-from projects.models import Project
 
 
 class DonateToProject(serializers.ModelSerializer):

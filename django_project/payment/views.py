@@ -1,10 +1,7 @@
-from .models import Payment
-from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from users.models import CustomUser
-from .serializers import DonateToProject, UpdateDonateProject
+from .serializers import DonateToProject
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from projects.models import Project
@@ -12,12 +9,14 @@ from rest_framework import serializers
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from django.db import transaction
 
 
 class DonateProjectView(generics.CreateAPIView):
     serializer_class = DonateToProject
     permission_classes = [AllowAny]
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

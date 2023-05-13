@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     country = CountryField(null=True, blank=True)
     user_image = models.ImageField(
         null=True, blank=True, upload_to='static/images')
-    birth_date = models.DateTimeField(null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self) -> str:
         return super().__str__()
