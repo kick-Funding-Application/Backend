@@ -30,11 +30,11 @@ class Project(models.Model):
         return self.title
 
     def get_img_url(self):
-        return Thumbnail.objects.filter(project=self).all()
+        return Thumbnail.objects.filter(project=self).first()
 
 
 class Thumbnail(models.Model):
-    image_url = models.CharField(max_length=255)
+    image = models.ImageField(null=True, blank=True, upload_to="static/images")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -6,15 +6,14 @@ from common.models import Rate
 class ThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thumbnail
-        fields = ("image_url",)
+        fields = ("image",)
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    end_date = serializers.DateTimeField(
-        format="%B %d, %Y %I:%M %p", required=False)
+    end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
     img_url = serializers.SerializerMethodField()
     rate = serializers.SerializerMethodField()
-    thumbnails = ThumbnailSerializer(many=True, write_only=True)
+    thumbnails = ThumbnailSerializer(write_only=True)
 
     class Meta:
         model = Project
@@ -35,7 +34,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_img_url(self, obj):
         image_url = obj.get_img_url()
         if image_url:
-            serializer = ThumbnailSerializer(image_url, many=True)
+            serializer = ThumbnailSerializer(image_url)
             return serializer.data
         return None
 
@@ -66,8 +65,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         return rate_data
 
     def create(self, validated_data):
-        thumbnail_data = validated_data.pop("thumbnails")
+        thumbnail_data = validated_data.pop("thumbnails")["image"]
         project = Project.objects.create(**validated_data)
-        for data in thumbnail_data:
-            Thumbnail.objects.create(project=project, **data)
+        Thumbnail.objects.create(project=project, image=thumbnail_data)
         return project
