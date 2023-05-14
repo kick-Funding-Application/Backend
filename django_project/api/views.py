@@ -2,6 +2,8 @@ from rest_framework import viewsets, generics
 from .serializers import ProjectSerializer, ThumbnailSerializer
 from projects.models import Project, Thumbnail
 from rest_framework import filters
+from common.serializers import RateSerializer, CommentSerializer
+from common.models import Rate, Comment
 
 
 # Create your views here.
@@ -27,3 +29,13 @@ class ProjectByCategoryAPI(generics.ListAPIView):
             return project
         except Project.DoesNotExist:
             return Project.objects.none()
+
+
+class RateViewSets(viewsets.ModelViewSet):
+    queryset = Rate.objects.all()
+    serializer_class = RateSerializer
+
+
+class CommentViewSets(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer

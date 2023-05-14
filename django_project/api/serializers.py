@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from projects.models import Thumbnail, Project
 from common.models import Rate
+from rest_framework import status
+from rest_framework.response import Response
+from users.models import CustomUser
 
 
 class ThumbnailSerializer(serializers.ModelSerializer):
@@ -21,6 +24,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "details",
+            "created_by",
             "target_amount",
             "current_amount",
             "end_date",
@@ -66,6 +70,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         thumbnail_data = validated_data.pop("thumbnails")["image"]
-        project = Project.objects.create(**validated_data)
+        Project.objects.create(**validated_data)
         Thumbnail.objects.create(project=project, image=thumbnail_data)
-        return project
+        return Response(
+            {"details": "Project data stored successfully"},
+            status=status.HTTP_201_CREATED,
+        )

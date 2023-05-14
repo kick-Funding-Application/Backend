@@ -1,6 +1,5 @@
 from django.db import models
-
-from users.models import CustomUser
+from django.conf import settings
 
 
 # Create your models here.
@@ -21,6 +20,9 @@ class Project(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     created_dt = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+    )
     category = models.CharField(
         max_length=50, choices=CATEGORY_CHOICES, default="other"
     )
