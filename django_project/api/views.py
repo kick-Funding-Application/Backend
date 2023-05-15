@@ -63,8 +63,16 @@ class CommentViewSets(viewsets.ModelViewSet):
             project_id = int(self.kwargs.get("project_id"))
             project = Project.objects.get(pk=project_id)
             comment = Comment.objects.filter(project=project).all()
-            if len(comment) == 0:
+            if len(comment) == 0.0:
                 raise exceptions.NotFound(detail="No comment for the current project.")
             return comment
         except Project.DoesNotExist:
             raise exceptions.NotFound(detail="Project Not found.")
+
+    def perform_create(self, serializer):
+        try:
+            project_id = int(self.kwargs.get("project_id"))
+            project = Project.objects.get(pk=project_id)
+            serializer.save(project=project)
+        except Project.DoesNotExist:
+            raise exceptions.NotFound(detail="Project Not Found.")

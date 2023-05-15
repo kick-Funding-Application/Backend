@@ -83,4 +83,4 @@ class ProjectSerializer(serializers.ModelSerializer):
             Thumbnail.objects.create(project=project, image=thumbnail_data)
             return project
         except Exception as e:
-            raise exceptions.ParseError(detail=str(e))
+            raise exceptions.ValidationError(detail=str(e))
