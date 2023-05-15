@@ -3,6 +3,8 @@ from .views import (
     ProjectViewSets,
     ThumbnailViewSets,
     ProjectByCategoryAPI,
+    RateViewSets,
+    CommentViewSets,
 )
 from dj_rest_auth.registration.views import VerifyEmailView
 from rest_framework.routers import DefaultRouter
@@ -12,27 +14,26 @@ from dj_rest_auth.views import (
     PasswordResetView,
     PasswordResetConfirmView,
 )
-from users.views import (
-    CustomRegisterView,
-    CustomUserDetailsView,
-    EmailConfirmationView
-)
+from users.views import CustomRegisterView, CustomUserDetailsView, EmailConfirmationView
 
 
-router = DefaultRouter()
-router.register("projects", ProjectViewSets, basename="project")
-router.register("images", ThumbnailViewSets, basename="image")
+project_router = DefaultRouter()
+project_router.register("projects", ProjectViewSets, basename="project")
+project_router.register("images", ThumbnailViewSets, basename="image")
+
+rate_comment_router = DefaultRouter()
+rate_comment_router.register("rate", RateViewSets, basename="rate")
+rate_comment_router.register("comment", CommentViewSets, basename="comment")
 
 
 urlpatterns = [
-    path("password/reset/", PasswordResetView.as_view(),
-         name="rest_password_reset"),
+    path("password/reset/", PasswordResetView.as_view(), name="rest_password_reset"),
     path(
         "password/reset/confirm/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
-    path("", include(router.urls)),
+    path("", include(project_router.urls)),
     path(
         "projects/<str:category>/filter",
         ProjectByCategoryAPI.as_view(),
@@ -52,10 +53,12 @@ urlpatterns = [
         VerifyEmailView.as_view(),
         name="account_confirm_email",
     ),
-    path('email-confirmation/<str:key>/',
-         EmailConfirmationView.as_view(), name='email-confirmation'),
     path(
-        "dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"
+        "email-confirmation/<str:key>/",
+        EmailConfirmationView.as_view(),
+        name="email-confirmation",
     ),
+    path("dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"),
     path("", include("payment.urls")),
+    path("projects/<int:project_id>/", include(rate_comment_router.urls)),
 ]

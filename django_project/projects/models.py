@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.models import CustomUser
+from django.conf import settings
 
 
 # Create your models here.
@@ -21,6 +21,9 @@ class Project(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     created_dt = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+    )
     category = models.CharField(
         max_length=50, choices=CATEGORY_CHOICES, default="other"
     )
@@ -30,11 +33,11 @@ class Project(models.Model):
         return self.title
 
     def get_img_url(self):
-        return Thumbnail.objects.filter(project=self).all()
+        return Thumbnail.objects.filter(project=self).first()
 
 
 class Thumbnail(models.Model):
-    image_url = models.CharField(max_length=255)
+    image = models.ImageField(null=True, blank=True, upload_to="static/images")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
