@@ -1,8 +1,8 @@
 from django.db import models
-from projects.models import Project
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.text import Truncator
 from django.conf import settings
+from projects.models import Project
 
 
 # Create your models here.

@@ -17,11 +17,13 @@ from dj_rest_auth.views import (
 from users.views import CustomRegisterView, CustomUserDetailsView, EmailConfirmationView
 
 
-router = DefaultRouter()
-router.register("projects", ProjectViewSets, basename="project")
-router.register("images", ThumbnailViewSets, basename="image")
-router.register("rate", RateViewSets, basename="rate")
-router.register("comment", CommentViewSets, basename="comment")
+project_router = DefaultRouter()
+project_router.register("projects", ProjectViewSets, basename="project")
+project_router.register("images", ThumbnailViewSets, basename="image")
+
+rate_comment_router = DefaultRouter()
+rate_comment_router.register("rate", RateViewSets, basename="rate")
+rate_comment_router.register("comment", CommentViewSets, basename="comment")
 
 
 urlpatterns = [
@@ -31,7 +33,7 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
-    path("", include(router.urls)),
+    path("", include(project_router.urls)),
     path(
         "projects/<str:category>/filter",
         ProjectByCategoryAPI.as_view(),
@@ -58,4 +60,5 @@ urlpatterns = [
     ),
     path("dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"),
     path("", include("payment.urls")),
+    path("projects/<int:project_id>/", include(rate_comment_router.urls)),
 ]

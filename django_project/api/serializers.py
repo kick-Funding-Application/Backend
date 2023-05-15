@@ -1,9 +1,8 @@
-from rest_framework import serializers
+from rest_framework import serializers, status, exceptions
 from projects.models import Thumbnail, Project
-from common.models import Rate
-from rest_framework import status
-from rest_framework.response import Response
 from users.models import CustomUser
+from common.models import Rate, Comment
+from common.serializers import CommentSerializer
 
 
 class ThumbnailSerializer(serializers.ModelSerializer):
@@ -14,9 +13,10 @@ class ThumbnailSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
+    thumbnails = ThumbnailSerializer(write_only=True)
     img_url = serializers.SerializerMethodField()
     rate = serializers.SerializerMethodField()
-    thumbnails = ThumbnailSerializer(write_only=True)
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -30,6 +30,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "end_date",
             "category",
             "tags",
+            "comments",
             "rate",
             "img_url",
             "thumbnails",
@@ -40,7 +41,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         if image_url:
             serializer = ThumbnailSerializer(image_url)
             return serializer.data
-        return None
+        return "No image found."
 
     def get_rate(self, obj):
         counts = {}
@@ -68,11 +69,18 @@ class ProjectSerializer(serializers.ModelSerializer):
         }
         return rate_data
 
+    def get_comments(self, obj):
+        comments = Comment.objects.filter(project=obj.pk).all()
+        if comments:
+            serializer = CommentSerializer(comments, many=True)
+            return serializer.data
+        return "No comments yet."
+
     def create(self, validated_data):
-        thumbnail_data = validated_data.pop("thumbnails")["image"]
-        Project.objects.create(**validated_data)
-        Thumbnail.objects.create(project=project, image=thumbnail_data)
-        return Response(
-            {"details": "Project data stored successfully"},
-            status=status.HTTP_201_CREATED,
-        )
+        try:
+            thumbnail_data = validated_data.pop("thumbnails")["image"]
+            project = Project.objects.create(**validated_data)
+            Thumbnail.objects.create(project=project, image=thumbnail_data)
+            return project
+        except Exception as e:
+            raise exceptions.ParseError(detail=str(e))

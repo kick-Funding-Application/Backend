@@ -5,12 +5,12 @@ from .models import Rate, Comment
 class RateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rate
-        fields = "__all__"
+        fields = ("value", "user", "project")
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    created_dt = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
+    created_dt = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", read_only=True)
 
     class Meta:
         model = Comment
-        fields = "__all__"
+        fields = ("content", "created_dt", "user")
