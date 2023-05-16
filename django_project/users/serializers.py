@@ -3,7 +3,7 @@ from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django_countries.serializer_fields import CountryField
 from django.conf import settings
-
+import datetime
 User = settings.AUTH_USER_MODEL
 
 
@@ -14,8 +14,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     phone_number = serializers.IntegerField()
     country = CountryField()
     user_image = serializers.ImageField(required=False)
-    birth_date = serializers.DateTimeField()
-
+    birth_date = serializers.DateField()
     def custom_signup(self, request, user):
         user.username = self.validated_data['username']
         user.first_name = self.validated_data['first_name']
@@ -36,7 +35,7 @@ class CustomUserDetailsSerializer(serializers.Serializer):
     phone_number = serializers.IntegerField()
     country = CountryField()
     user_image = serializers.ImageField()
-    birth_date = serializers.DateTimeField()
+    birth_date = serializers.DateField()
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get("first_name")
