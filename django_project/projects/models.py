@@ -37,7 +37,7 @@ class Project(models.Model):
 
 
 class Thumbnail(models.Model):
-    image = models.ImageField(null=True, blank=True, upload_to="static/images")
+    image = models.CharField(max_length=250, null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):

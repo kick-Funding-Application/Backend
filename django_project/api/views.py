@@ -5,6 +5,10 @@ from rest_framework import filters, status, exceptions
 from common.serializers import RateSerializer, CommentSerializer
 from common.models import Rate, Comment
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from users.models import CustomUser
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 
 # Create your views here.
@@ -13,6 +17,18 @@ class ProjectViewSets(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     search_fields = ["title", "details"]
     filter_backends = (filters.SearchFilter,)
+
+    def perform_create(self, serializer):
+        try:
+            authorization_header = self.request.headers.get("Authorization")
+            if authorization_header is None:
+                raise exceptions.NotAuthenticated(detail="Invalid Token.")
+            token = authorization_header.split(" ")[1]
+            user_id = Token.objects.get(key=token).user_id
+        except Token.DoesNotExist:
+            raise exceptions.NotAuthenticated(detail="Invalid token.")
+        user = get_object_or_404(CustomUser, pk=user_id)
+        serializer.save(created_by=user)
 
 
 class ThumbnailViewSets(viewsets.ModelViewSet):
@@ -49,10 +65,24 @@ class RateViewSets(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         try:
             project_id = int(self.kwargs.get("project_id"))
-            project = Project.objects.get(pk=project_id)
-            serializer.save(project=project)
-        except Project.DoesNotExist:
-            raise exceptions.NotFound(detail="Project Not Found.")
+            project = get_object_or_404(Project, pk=project_id)
+
+            authorization_header = self.request.headers.get("Authorization")
+            if authorization_header is None:
+                raise exceptions.NotAuthenticated(detail="Invalid Token.")
+            token = authorization_header.split(" ")[1]
+            user_id = Token.objects.get(key=token).user_id
+            user = get_object_or_404(CustomUser, pk=user_id)
+
+            rate = Rate.objects.filter(Q(project=project) & Q(user=user)).first()
+            if rate is not None and rate.user == user:
+                raise exceptions.PermissionDenied(detail="Not allowed to rate twice.")
+
+        except Token.DoesNotExist:
+            raise exceptions.NotAuthenticated(detail="Invalid Token.")
+        serializer.save(project=project, user=user)
+
+        return Response({"detail": "Thank You for rating :)"}, status=201)
 
 
 class CommentViewSets(viewsets.ModelViewSet):
@@ -72,7 +102,21 @@ class CommentViewSets(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         try:
             project_id = int(self.kwargs.get("project_id"))
-            project = Project.objects.get(pk=project_id)
-            serializer.save(project=project)
+            project = get_object_or_404(Project, pk=project_id)
+
+            authorization_header = self.request.headers.get("Authorization")
+            if authorization_header is None:
+                raise exceptions.NotAuthenticated(detail="Invalid Token.")
+            token = authorization_header.split(" ")[1]
+            user_id = Token.objects.get(key=token).user_id
+            user = get_object_or_404(CustomUser, pk=user_id)
+
+            comment = Comment.objects.filter(Q(project=project) & Q(user=user)).first()
+            if comment is not None and comment.user == user:
+                raise exceptions.PermissionDenied(detail="Not allowed to rate twice.")
         except Project.DoesNotExist:
-            raise exceptions.NotFound(detail="Project Not Found.")
+            raise exceptions.NotAuthenticated(detail="Invalid Token.")
+
+        serializer.save(project=project, user=user)
+
+        return Response({"detail": "Thank You for Commenting :)"}, status=201)
