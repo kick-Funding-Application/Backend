@@ -1,10 +1,5 @@
 from users.views import CustomUserDetailsView
-from .views import (
-    ProjectViewSets,
-    ProjectByCategoryAPI,
-    RateViewSets,
-    CommentViewSets,
-)
+from .views import ProjectViewSets, ProjectByCategoryAPI
 from dj_rest_auth.registration.views import VerifyEmailView
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include, re_path
@@ -14,14 +9,14 @@ from dj_rest_auth.views import (
     PasswordResetConfirmView,
 )
 from users.views import CustomRegisterView, CustomUserDetailsView, EmailConfirmationView
+from common.views import FeedbackViewSets
 
 
 project_router = DefaultRouter()
 project_router.register("projects", ProjectViewSets, basename="project")
 
-rate_comment_router = DefaultRouter()
-rate_comment_router.register("rate", RateViewSets, basename="rate")
-rate_comment_router.register("comment", CommentViewSets, basename="comment")
+feedback_router = DefaultRouter()
+feedback_router.register("feedback", FeedbackViewSets, basename="feedback")
 
 
 urlpatterns = [
@@ -58,5 +53,5 @@ urlpatterns = [
     ),
     path("dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"),
     path("", include("payment.urls")),
-    path("projects/<int:project_id>/", include(rate_comment_router.urls)),
+    path("projects/<int:project_id>/", include(feedback_router.urls)),
 ]
