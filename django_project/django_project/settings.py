@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django_countries",
     "dj_rest_auth.registration",
     "sendgrid",
+    "drf_spectacular",
     # Local Apps :
     "api",
     "payment",
@@ -180,7 +181,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
-    ]
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema", 
 }
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_ID = 1
@@ -194,3 +196,9 @@ EMAIL_HOST_PASSWORD = "SG.INQQHB4eTTmNNPzoyoN9kA.XbHXTeskI-7o9KujIYHwnU05P2mjOom
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
+
+SPECTACULAR_SETTINGS = {
+"TITLE": "Kick Funding API Project",
+"DESCRIPTION": "DRF API Project About Collecting Donations For Charities",
+"VERSION": "1.0.0",
+}
