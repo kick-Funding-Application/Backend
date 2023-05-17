@@ -38,3 +38,4 @@ class Project(models.Model):
         if self.created_by and hasattr(self.created_by, "user_image"):
             return self.created_by.user_image
         return None
+    
