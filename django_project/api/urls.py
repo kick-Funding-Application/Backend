@@ -1,5 +1,5 @@
 from users.views import CustomUserDetailsView
-from .views import ProjectViewSets, ProjectByCategoryAPI
+from .views import ProjectViewSets, ProjectByCategoryAPI, UserProjetAPI
 from dj_rest_auth.registration.views import VerifyEmailView
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include, re_path
@@ -52,6 +52,7 @@ urlpatterns = [
         name="email-confirmation",
     ),
     path("dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"),
+    path("dj-rest-auth/user/projects/", UserProjetAPI.as_view(), name="user-projects"),
     path("", include("payment.urls")),
     path("projects/<int:project_id>/", include(feedback_router.urls)),
 ]

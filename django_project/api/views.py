@@ -26,7 +26,7 @@ class ProjectViewSets(viewsets.ModelViewSet):
         except Token.DoesNotExist:
             raise exceptions.NotAuthenticated(detail="Invalid token.")
         user = get_object_or_404(CustomUser, pk=user_id)
-        serializer.save(created_by=user)
+        serializer.save(created_by=user, user_image=user.user_image)
 
 
 class ProjectByCategoryAPI(generics.ListAPIView):
@@ -41,75 +41,18 @@ class ProjectByCategoryAPI(generics.ListAPIView):
             return Project.objects.none()
 
 
-# class RateViewSets(viewsets.ModelViewSet):
-#     serializer_class = RateSerializer
+class UserProjetAPI(generics.ListAPIView):
+    serializer_class = ProjectSerializer
 
-#     def get_queryset(self):
-#         try:
-#             project_id = int(self.kwargs.get("project_id"))
-#             project = Project.objects.get(pk=project_id)
-#             rate = Rate.objects.filter(project=project).all()
-#             if len(rate) == 0:
-#                 raise exceptions.NotFound(detail="No rate for the current project.")
-#             return rate
-#         except Project.DoesNotExist:
-#             raise exceptions.NotFound(detail="Project Not found.")
-
-#     def perform_create(self, serializer):
-#         try:
-#             project_id = int(self.kwargs.get("project_id"))
-#             project = get_object_or_404(Project, pk=project_id)
-
-#             authorization_header = self.request.headers.get("Authorization")
-#             if authorization_header is None:
-#                 raise exceptions.NotAuthenticated(detail="Invalid Token.")
-#             token = authorization_header.split(" ")[1]
-#             user_id = Token.objects.get(key=token).user_id
-#             user = get_object_or_404(CustomUser, pk=user_id)
-
-#             rate = Rate.objects.filter(Q(project=project) & Q(user=user)).first()
-#             if rate is not None and rate.user == user:
-#                 raise exceptions.PermissionDenied(detail="Not allowed to rate twice.")
-
-#         except Token.DoesNotExist:
-#             raise exceptions.NotAuthenticated(detail="Invalid Token.")
-#         serializer.save(project=project, user=user)
-
-#         return Response({"detail": "Thank You for rating :)"}, status=201)
-
-
-# class CommentViewSets(viewsets.ModelViewSet):
-#     serializer_class = CommentSerializer
-
-#     def get_queryset(self):
-#         try:
-#             project_id = int(self.kwargs.get("project_id"))
-#             project = Project.objects.get(pk=project_id)
-#             comment = Comment.objects.filter(project=project).all()
-#             if len(comment) == 0.0:
-#                 raise exceptions.NotFound(detail="No comment for the current project.")
-#             return comment
-#         except Project.DoesNotExist:
-#             raise exceptions.NotFound(detail="Project Not found.")
-
-#     def perform_create(self, serializer):
-#         try:
-#             project_id = int(self.kwargs.get("project_id"))
-#             project = get_object_or_404(Project, pk=project_id)
-
-#             authorization_header = self.request.headers.get("Authorization")
-#             if authorization_header is None:
-#                 raise exceptions.NotAuthenticated(detail="Invalid Token.")
-#             token = authorization_header.split(" ")[1]
-#             user_id = Token.objects.get(key=token).user_id
-#             user = get_object_or_404(CustomUser, pk=user_id)
-
-#             comment = Comment.objects.filter(Q(project=project) & Q(user=user)).first()
-#             if comment is not None and comment.user == user:
-#                 raise exceptions.PermissionDenied(detail="Not allowed to rate twice.")
-#         except Project.DoesNotExist:
-#             raise exceptions.NotAuthenticated(detail="Invalid Token.")
-
-#         serializer.save(project=project, user=user)
-
-#         return Response({"detail": "Thank You for Commenting :)"}, status=201)
+    def get_queryset(self):
+        try:
+            authorization_header = self.request.headers.get("Authorization")
+            if authorization_header is None:
+                raise exceptions.NotAuthenticated(detail="Invalid Token.")
+            token = authorization_header.split(" ")[1]
+            user_id = Token.objects.get(key=token).user_id
+            user = get_object_or_404(CustomUser, pk=user_id)
+            project = Project.objects.filter(created_by=user)
+            return project
+        except Token.DoesNotExist:
+            return exceptions.NotAuthenticated(detail="Invalid Token.")
