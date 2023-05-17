@@ -14,13 +14,13 @@ class Project(models.Model):
         ("Other", "Other"),
     ]
 
-    title = models.CharField(max_length=150, unique=True)
+    title = models.CharField(max_length=300, unique=True)
     details = models.TextField()
     target_amount = models.PositiveIntegerField(default=0)
     current_amount = models.IntegerField(default=0)
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField()
-    image = models.CharField(max_length=250, null=True, blank=True)
+    image = models.CharField(max_length=500, null=True, blank=True)
     created_dt = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
@@ -32,3 +32,9 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def user_image(self):
+        if self.created_by and hasattr(self.created_by, "user_image"):
+            return self.created_by.user_image
+        return None

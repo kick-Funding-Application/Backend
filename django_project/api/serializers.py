@@ -8,8 +8,9 @@ from common.serializers import FeedbackSerializer
 class ProjectSerializer(serializers.ModelSerializer):
     end_date = serializers.DateField(required=False)
     start_date = serializers.DateField(read_only=True, required=False)
-    rate = serializers.SerializerMethodField()
-    feedback = serializers.SerializerMethodField()
+    rate = serializers.SerializerMethodField("get_rate")
+    feedback = serializers.SerializerMethodField("get_feedback")
+    user_image = serializers.SerializerMethodField("get_user_image")
     created_by = serializers.CharField(required=False)
 
     class Meta:
@@ -19,6 +20,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "title",
             "details",
             "created_by",
+            "user_image",
             "target_amount",
             "current_amount",
             "start_date",
@@ -65,3 +67,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             serializer = FeedbackSerializer(feedback, many=True)
             return serializer.data
         return "No feedback yet."
+
+    def get_user_image(self, obj):
+        return obj.user_image
