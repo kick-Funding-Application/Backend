@@ -1,22 +1,16 @@
 from rest_framework import serializers, status, exceptions
-from projects.models import Thumbnail, Project
+from projects.models import Project
 from users.models import CustomUser
 from common.models import Rate, Comment
 from common.serializers import CommentSerializer
 
 
-class ThumbnailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Thumbnail
-        fields = ("image",)
-
-
 class ProjectSerializer(serializers.ModelSerializer):
-    end_date = serializers.DateTimeField(format="%B %d, %Y %I:%M %p", required=False)
-    thumbnails = ThumbnailSerializer(write_only=True)
-    img_url = serializers.SerializerMethodField()
+    end_date = serializers.DateField(required=False)
+    start_date = serializers.DateField(read_only=True, required=False)
     rate = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    created_by = serializers.CharField(required=False)
 
     class Meta:
         model = Project
@@ -27,21 +21,14 @@ class ProjectSerializer(serializers.ModelSerializer):
             "created_by",
             "target_amount",
             "current_amount",
+            "start_date",
             "end_date",
             "category",
             "tags",
+            "image",
             "comments",
             "rate",
-            "img_url",
-            "thumbnails",
         )
-
-    def get_img_url(self, obj):
-        image_url = obj.get_img_url()
-        if image_url:
-            serializer = ThumbnailSerializer(image_url)
-            return serializer.data
-        return "No image found."
 
     def get_rate(self, obj):
         counts = {}
@@ -75,12 +62,3 @@ class ProjectSerializer(serializers.ModelSerializer):
             serializer = CommentSerializer(comments, many=True)
             return serializer.data
         return "No comments yet."
-
-    def create(self, validated_data):
-        try:
-            thumbnail_data = validated_data.pop("thumbnails")["image"]
-            project = Project.objects.create(**validated_data)
-            Thumbnail.objects.create(project=project, image=thumbnail_data)
-            return project
-        except Exception as e:
-            raise exceptions.ValidationError(detail=str(e))

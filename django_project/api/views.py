@@ -1,6 +1,6 @@
 from rest_framework import viewsets, generics
-from .serializers import ProjectSerializer, ThumbnailSerializer
-from projects.models import Project, Thumbnail
+from .serializers import ProjectSerializer
+from projects.models import Project
 from rest_framework import filters, status, exceptions
 from common.serializers import RateSerializer, CommentSerializer
 from common.models import Rate, Comment
@@ -15,7 +15,7 @@ from django.db.models import Q
 class ProjectViewSets(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    search_fields = ["title", "details"]
+    search_fields = ["title", "details", "tags"]
     filter_backends = (filters.SearchFilter,)
 
     def perform_create(self, serializer):
@@ -29,11 +29,6 @@ class ProjectViewSets(viewsets.ModelViewSet):
             raise exceptions.NotAuthenticated(detail="Invalid token.")
         user = get_object_or_404(CustomUser, pk=user_id)
         serializer.save(created_by=user)
-
-
-class ThumbnailViewSets(viewsets.ModelViewSet):
-    queryset = Thumbnail.objects.all()
-    serializer_class = ThumbnailSerializer
 
 
 class ProjectByCategoryAPI(generics.ListAPIView):

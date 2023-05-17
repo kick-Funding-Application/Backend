@@ -6,20 +6,21 @@ from django.conf import settings
 # Create your models here.
 class Project(models.Model):
     CATEGORY_CHOICES = [
-        ("health", "Health"),
-        ("education", "Education"),
-        ("environment", "Environment"),
-        ("animal", "Animal"),
-        ("culture & art", "Culture & Art"),
-        ("other", "Other"),
+        ("Health", "Health"),
+        ("Education", "Education"),
+        ("Environment", "Environment"),
+        ("Animals", "Animals"),
+        ("Culture & Art", "Culture & Art"),
+        ("Other", "Other"),
     ]
 
     title = models.CharField(max_length=150, unique=True)
     details = models.TextField()
     target_amount = models.PositiveIntegerField(default=0)
     current_amount = models.IntegerField(default=0)
-    start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField()
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
+    image = models.CharField(max_length=250, null=True, blank=True)
     created_dt = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
@@ -31,14 +32,3 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_img_url(self):
-        return Thumbnail.objects.filter(project=self).first()
-
-
-class Thumbnail(models.Model):
-    image = models.CharField(max_length=250, null=True, blank=True)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.project.__str__()

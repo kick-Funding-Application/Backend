@@ -1,7 +1,6 @@
 from users.views import CustomUserDetailsView
 from .views import (
     ProjectViewSets,
-    ThumbnailViewSets,
     ProjectByCategoryAPI,
     RateViewSets,
     CommentViewSets,
@@ -19,7 +18,6 @@ from users.views import CustomRegisterView, CustomUserDetailsView, EmailConfirma
 
 project_router = DefaultRouter()
 project_router.register("projects", ProjectViewSets, basename="project")
-project_router.register("images", ThumbnailViewSets, basename="image")
 
 rate_comment_router = DefaultRouter()
 rate_comment_router.register("rate", RateViewSets, basename="rate")
