@@ -1,7 +1,11 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import DonateToProject, DonationListSerializer
+from .serializers import (
+    DonateToProject,
+    DonationListSerializer,
+    TransactionListSerializer,
+)
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from projects.models import Project
@@ -11,6 +15,8 @@ from rest_framework.permissions import AllowAny
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from .models import Payment
+from rest_framework.authtoken.models import Token
+from users.models import CustomUser
 
 
 class DonateProjectView(generics.CreateAPIView):
@@ -75,3 +81,23 @@ class ProjectDonationAPI(generics.ListAPIView):
             return [donations]
         except Payment.DoesNotExist:
             raise exceptions.NotFound(detail="No Donations in this project")
+
+
+class UserTransactionAPI(generics.ListAPIView):
+    serializer_class = TransactionListSerializer
+
+    def get_queryset(self):
+        try:
+            authorization_header = self.request.headers.get("Authorization")
+            if authorization_header is None:
+                raise exceptions.NotAuthenticated(detail="Invalid Token.")
+            token = authorization_header.split(" ")[1]
+            user_id = Token.objects.get(key=token).user_id
+            user = get_object_or_404(CustomUser, pk=user_id)
+            try:
+                donations = Payment.objects.filter(user=user).all()
+                return [donations]
+            except Payment.DoesNotExist:
+                raise exceptions.NotFound(detail="No Donations Found.")
+        except Token.DoesNotExist:
+            raise exceptions.NotAuthenticated(detail="Invalid Token.")

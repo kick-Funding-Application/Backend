@@ -24,12 +24,12 @@ class UpdateDonateProject(serializers.ModelSerializer):
 
 
 class DonateInfoSerializer(serializers.ModelSerializer):
-    value = serializers.FloatField(source="input_amount")
+    amount = serializers.FloatField(source="input_amount")
     user = serializers.StringRelatedField()
 
     class Meta:
         model = Payment
-        fields = ("value", "user")
+        fields = ("amount", "user")
 
 
 class DonateDateSerializer(serializers.ModelSerializer):
@@ -63,5 +63,51 @@ class DonationListSerializer(serializers.Serializer):
     def to_representation(self, instance):
         if len(self.get_donation_list(instance)) != 0:
             return {"donation_list": self.get_donation_list(instance)}
+        else:
+            raise exceptions.NotFound(detail="No Donations Found.")
+
+
+class UserTransactionInfoSerializer(serializers.ModelSerializer):
+    amount = serializers.FloatField(source="input_amount")
+    project = serializers.StringRelatedField()
+    details = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        fields = ("amount", "project", "details")
+
+    def get_details(self, obj):
+        return obj.project.details
+
+
+class UserTransactionDateSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(source="created_at")
+    info = UserTransactionInfoSerializer(many=True)
+
+    class Meta:
+        model = Payment
+        fields = ("date", "info")
+
+
+class TransactionListSerializer(serializers.Serializer):
+    transaction_list = UserTransactionDateSerializer(many=True)
+
+    def get_transaction_list(self, obj):
+        transactions = obj
+        response = {}
+        for transaction in transactions:
+            date = transaction.created_at.strftime("%Y-%m-%d")
+            serializer = UserTransactionInfoSerializer(transaction)
+            data = serializer.data
+
+            if date in response:
+                response[date].append(data)
+            else:
+                response[date] = [data]
+        return response
+
+    def to_representation(self, instance):
+        if len(self.get_transaction_list(instance)) != 0:
+            return {"transaction_list": self.get_transaction_list(instance)}
         else:
             raise exceptions.NotFound(detail="No Donations Found.")

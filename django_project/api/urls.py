@@ -10,7 +10,7 @@ from dj_rest_auth.views import (
 )
 from users.views import CustomRegisterView, CustomUserDetailsView, EmailConfirmationView
 from common.views import FeedbackViewSets
-
+from payment.views import UserTransactionAPI
 
 project_router = DefaultRouter()
 project_router.register("projects", ProjectViewSets, basename="project")
@@ -53,6 +53,9 @@ urlpatterns = [
     ),
     path("dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"),
     path("dj-rest-auth/user/projects/", UserProjetAPI.as_view(), name="user-projects"),
+    path(
+        "dj-rest-auth/user/donate/", UserTransactionAPI.as_view(), name="user-donations"
+    ),
     path("", include("payment.urls")),
     path("projects/<int:project_id>/", include(feedback_router.urls)),
 ]
