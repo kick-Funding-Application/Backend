@@ -26,10 +26,14 @@ class UpdateDonateProject(serializers.ModelSerializer):
 class DonateInfoSerializer(serializers.ModelSerializer):
     amount = serializers.FloatField(source="input_amount")
     user = serializers.StringRelatedField()
+    phone_number = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
-        fields = ("amount", "user")
+        fields = ("amount", "user", "phone_number")
+
+    def get_phone_number(self, obj):
+        return obj.user.phone_number
 
 
 class DonateDateSerializer(serializers.ModelSerializer):
