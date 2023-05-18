@@ -9,7 +9,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class CustomRegisterSerializer(RegisterSerializer):
-    username = serializers.CharField(max_length=150, read_only=True)
+    username = serializers.CharField(max_length=150)
     first_name = serializers.CharField(max_length=20)
     last_name = serializers.CharField(max_length=20)
     phone_number = serializers.IntegerField()
