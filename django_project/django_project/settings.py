@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+import environ
 
+env = environ.Env()
+environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -184,17 +187,19 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema", 
 }
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 LOGIN_ON_EMAIL_CONFIRMATION = True
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_FROM = "kickfundingapp@gmail.com"
-EMAIL_HOST_USER = "apikey"
-EMAIL_HOST_PASSWORD = "SG.INQQHB4eTTmNNPzoyoN9kA.XbHXTeskI-7o9KujIYHwnU05P2mjOomUdVmk9NPaXXk"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'kickfundingapp@gmail.com'
+EMAIL_HOST_USER = 'kickfundingapp@gmail.com'
+EMAIL_HOST_PASSWORD = 'qpqjbqtcbdadfzmu'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
 
 SPECTACULAR_SETTINGS = {
@@ -202,3 +207,4 @@ SPECTACULAR_SETTINGS = {
 "DESCRIPTION": "DRF API Project About Collecting Donations For Charities",
 "VERSION": "1.0.0",
 }
+# 

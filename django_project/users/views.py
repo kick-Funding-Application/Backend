@@ -30,21 +30,22 @@ class CustomRegisterView(RegisterView):
 
         # Get the current site
         current_site = get_current_site(self.request)
-        key = get_random_string(length=40)
+
         # Create the email confirmation instance
-        email_confirmation = EmailConfirmation.create(
-            user.emailaddress_set.get(email=user.email))
+        email_address = user.emailaddress_set.get(email=user.email)
+        email_confirmation = EmailConfirmation.create(email_address)
         email_confirmation.sent = timezone.now()
+        email_confirmation.key = get_random_string(length=40)  # Generate a unique key
         email_confirmation.save()
 
         # Build the confirmation URL
         confirmation_url = reverse(
             'email-confirmation', kwargs={'key': email_confirmation.key})
-        confirmation_url = f"{current_site}{confirmation_url}"
+        confirmation_url = f"http://127.0.0.1:8000{confirmation_url}"
 
         # Send the email
         send_mail(
-            'Email Confirmation',
+            'Email Confirmation For Kick Funding App',
             f'Please confirm your email by clicking the following link: {confirmation_url}',
             'your-email@gmail.com',
             [user.email],
