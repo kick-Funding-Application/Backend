@@ -38,4 +38,7 @@ class Project(models.Model):
         if self.created_by and hasattr(self.created_by, "user_image"):
             return self.created_by.user_image
         return None
-    
+
+    @user_image.setter
+    def user_image(self, value):
+        pass
