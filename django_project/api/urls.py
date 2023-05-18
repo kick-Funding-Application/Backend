@@ -8,7 +8,7 @@ from dj_rest_auth.views import (
     PasswordResetView,
     PasswordResetConfirmView,
 )
-from users.views import CustomRegisterView, CustomUserDetailsView, EmailConfirmationView
+from users.views import CustomRegisterView, CustomUserDetailsView 
 from common.views import FeedbackViewSets
 from payment.views import UserTransactionAPI
 
@@ -26,6 +26,10 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
+    re_path('account-confirm-email/', VerifyEmailView.as_view(),
+            name='account_email_verification_sent'),
+    re_path('account-confirm-email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),
+            name='account_confirm_email'),
     path("", include(project_router.urls)),
     path(
         "projects/<str:category>/filter",
@@ -45,11 +49,6 @@ urlpatterns = [
         "account-confirm-email/(?P<key>[-:\w]+)/$",
         VerifyEmailView.as_view(),
         name="account_confirm_email",
-    ),
-    path(
-        "email-confirmation/<str:key>/",
-        EmailConfirmationView.as_view(),
-        name="email-confirmation",
     ),
     path("dj-rest-auth/user/", CustomUserDetailsView().as_view(), name="user-details"),
     path("dj-rest-auth/user/projects/", UserProjetAPI.as_view(), name="user-projects"),
