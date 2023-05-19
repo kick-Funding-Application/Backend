@@ -18,11 +18,23 @@ from .models import Payment
 from rest_framework.authtoken.models import Token
 from users.models import CustomUser
 
-
 class DonateProjectView(generics.CreateAPIView):
+    queryset = Payment.objects.all()
     serializer_class = DonateToProject
     permission_classes = [AllowAny]
-
+ 
+    def perform_create(self, serializer):
+        try:
+            authorization_header = self.request.headers.get("Authorization")
+            if authorization_header is None:
+                raise exceptions.NotAuthenticated(detail="Invalid Token.")
+            token = authorization_header.split(" ")[1]
+            user_id = Token.objects.get(key=token).user_id
+        except Token.DoesNotExist:
+            raise exceptions.NotAuthenticated(detail="Invalid token.")
+        user = get_object_or_404(CustomUser, pk=user_id)
+        serializer.save(user=user)
+ 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -46,10 +58,10 @@ class DonateProjectView(generics.CreateAPIView):
                         return Response(
                             response_data, status=status.HTTP_400_BAD_REQUEST
                         )
-
+ 
                     query.current_amount += input_amount
                     query.save()
-
+ 
                     serializer.save()
                     response_data = {
                         "status": 1,
@@ -63,8 +75,7 @@ class DonateProjectView(generics.CreateAPIView):
         else:
             response_data = {"status": 0, "errors": serializer.errors}
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-
-
+        
 class ProjectDonationAPI(generics.ListAPIView):
     serializer_class = DonationListSerializer
 

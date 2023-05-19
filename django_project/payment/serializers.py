@@ -5,9 +5,10 @@ from django.shortcuts import get_object_or_404
 
 
 class DonateToProject(serializers.ModelSerializer):
+    
     class Meta:
         model = Payment
-        fields = (
+        fields = (  
             "input_amount",
             "project",
             "user",
@@ -15,7 +16,11 @@ class DonateToProject(serializers.ModelSerializer):
             "target_amount",
             "current_amount",
         )
+        read_only_fields = ("user",)  # Exclude 'user' from being required
 
+    def validate(self, attrs):
+        attrs["user"] = self.context["request"].user  # Set the user from the request
+        return attrs
 
 class UpdateDonateProject(serializers.ModelSerializer):
     class Meta:
